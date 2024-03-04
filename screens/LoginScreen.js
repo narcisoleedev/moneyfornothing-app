@@ -1,8 +1,28 @@
-import react from 'react';
+import react, { useState } from 'react';
 import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
-const LoginScreen = () =>{
+const LoginScreen = ({navigation}) =>{
+    const [value1, setValue1] = useState('');
+    const [value2, setValue2] = useState('');
+
+    const response = async ()=>{
+        fetch('http://127.0.0.1:8000/login',
+        {
+            method:"POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: value1,
+                password: value2,
+            })
+        })
+        .then(response=>{
+            if(response=200) navigation.navigate('Home');
+        }).catch(error=>{
+            console.log(error);
+        });
+    }
+
     return(
     <View style={styles.mainView}>
         <View style={styles.topView}>
@@ -10,9 +30,14 @@ const LoginScreen = () =>{
         </View>
         <View style={styles.bottomView}>
             <View><Text style={styles.loginTitle}>Login</Text></View>
-            <TextInput style={styles.textInput}/>
-            <TextInput style={styles.textInput}/>
-            <Button style={styles.button} title='penis'/>
+            <TextInput style={styles.textInput}
+            value={value1}
+            onChangeText={setValue1}
+            />
+            <TextInput style={styles.textInput}
+            value={value2}
+            onChangeText={setValue2}/>
+            <Button style={styles.button} onPress={response} title='penis'/>
             <View style={styles.bottom}> 
                 <Text style={{color: "lightgray"}}>Forgot Password</Text>
                 <Text style={{color: "blue"}}>Signup</Text>
@@ -21,6 +46,7 @@ const LoginScreen = () =>{
     </View>
     )
 };
+//()=>{ navigation.navigate('Home') }
 
 const styles = StyleSheet.create({
     mainView: {
