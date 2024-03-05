@@ -1,4 +1,4 @@
-import react, { useState } from 'react';
+import react, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -6,8 +6,8 @@ const LoginScreen = ({navigation}) =>{
     const [value1, setValue1] = useState('');
     const [value2, setValue2] = useState('');
 
-    const response = async ()=>{
-        fetch('http://127.0.0.1:8000/login',
+    const response = useCallback(async ()=>{
+        fetch('http://192.168.0.8:8000/login',
         {
             method:"POST",
             headers: {'Content-Type': 'application/json'},
@@ -17,11 +17,11 @@ const LoginScreen = ({navigation}) =>{
             })
         })
         .then(response=>{
-            if(response=200) navigation.navigate('Home');
+            if(response["status"]==200) navigation.navigate('Home');
         }).catch(error=>{
             console.log(error);
         });
-    }
+    }, [value1, value2, navigation]);
 
     return(
     <View style={styles.mainView}>
@@ -37,7 +37,7 @@ const LoginScreen = ({navigation}) =>{
             <TextInput style={styles.textInput}
             value={value2}
             onChangeText={setValue2}/>
-            <Button style={styles.button} onPress={response} title='penis'/>
+            <Button style={styles.button} onPress={response} title='Login'/>
             <View style={styles.bottom}> 
                 <Text style={{color: "lightgray"}}>Forgot Password</Text>
                 <Text style={{color: "blue"}}>Signup</Text>
